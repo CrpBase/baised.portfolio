@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>bAIsed | AI video, motion, games and 3D</title>
-<meta name="description" content="Portfolio of bAIsed (@baisedit): ad and viral AI videos, motion design, games, voiceover and 3D for crypto projects. Made in Kyiv.">
+<meta name="description" content="Portfolio of bAIsed (@baisedit): ad and viral AI videos, motion design, games, voiceover and 3D for crypto projects.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="bAIsed | AI video, motion, games and 3D">
 <meta property="og:description" content="Ad and viral AI videos, motion design, games, voiceover and 3D for crypto projects.">
@@ -435,9 +435,9 @@ body.grabbing,body.grabbing *{cursor:grabbing!important;user-select:none}
 <section class="contact" id="contact">
   <div class="glow"><i class="g1"></i><i class="g2"></i></div>
   <div class="wrap">
-    <h2 class="contact-h" id="contactH">Send me your next launch.</h2>
+    <h2 class="contact-h" id="contactH">Get in touch.</h2>
     <div class="contact-btns" id="contactBtns"></div>
-    <div class="foot"><span>bAIsed, Kyiv</span><span id="year"></span></div>
+    <div class="foot"><span>bAIsed</span><span id="year"></span></div>
   </div>
 </section>
 </main>
@@ -565,11 +565,11 @@ body.grabbing,body.grabbing *{cursor:grabbing!important;user-select:none}
 var SEED = {
   profile:{
     headline:'Viral AI videos, motion, games and 3D for crypto projects.',
-    bio:'Two years inside crypto, working from Kyiv. 20+ Web3 projects so far, including Plasma, Sentient, Optimum and KAST. Launches become ads, viral videos, motion, games and 3D that people share.',
+    bio:'Two years making content for crypto. 20+ Web3 projects so far, including Plasma, Sentient, Optimum and KAST. Ads, viral videos, motion, games and 3D that people share.',
     /* each skill is one card in Works and one line in the hero list */
     skills:[
-      {id:'ads',t:'Ad and viral videos',d:'AI ads and clips for crypto launches, made to spread on X.'},
-      {id:'motion',t:'Motion design',d:'Explainers, slide reels and animated titles for launches.'},
+      {id:'ads',t:'Ad and viral videos',d:'AI ads and clips for crypto projects, made to spread on X.'},
+      {id:'motion',t:'Motion design',d:'Explainers, slide reels and animated titles.'},
       {id:'games',t:'Games and apps',d:'Browser games and apps played by communities of 100+ people.'},
       {id:'voice',t:'Voiceover and translation',d:'Clean voiceover for any video, translated into any language.'},
       {id:'3d',t:'3D models',d:'Models for games and videos.'}
@@ -767,8 +767,8 @@ function renderProfile(){
   var p=DATA.profile,c=p.contacts||{};
   $('#heroSub').textContent=p.headline||'';
   var hx=$('#heroX');hx.textContent=p.handle||'@baisedit';hx.href=c.x||'#contact';
-  var dm=c.email?'mailto:'+c.email:(c.x||'#contact');
-  $('#navCta').href=dm;if(/^https?:/.test(dm)){$('#navCta').target='_blank';$('#navCta').rel='noopener'}
+  // DM me scrolls to the contact block, where X, Telegram and Discord sit together
+  $('#navCta').href='#contact';$('#navCta').removeAttribute('target');
   // about
   var words=String(p.bio||'').trim().split(/\s+/).filter(Boolean);
   $('#aboutText').innerHTML=words.map(function(w){return '<span class="w">'+esc(w)+'</span>'}).join(' ');
