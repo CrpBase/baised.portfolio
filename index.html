@@ -118,7 +118,11 @@ img,video,iframe{display:block;max-width:100%}
 .chapter:last-child{margin-bottom:0}
 .ch-card{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#0d0e22;color:#fff;transform-origin:50% 0;will-change:transform;cursor:pointer;isolation:isolate;box-shadow:0 30px 70px rgba(7,8,26,.18)}
 .ch-media{position:absolute;inset:0}
-.ch-media>img,.ch-media>video{width:100%;height:100%;object-fit:cover}
+.ch-media>img,.ch-media>video{position:relative;width:100%;height:100%;object-fit:cover}
+/* when the video's shape is far from the card's (vertical video on desktop, 16:9 on a phone) it is shown whole over a blurred copy of its own frame */
+.ch-bd{display:none;position:absolute;inset:-70px;background:#0d0e22 center/cover no-repeat;filter:blur(48px) brightness(.55) saturate(1.25)}
+.ch-media.contain .ch-bd{display:block}
+.ch-media.contain>img,.ch-media.contain>video{object-fit:contain}
 .ch-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,8,26,.78) 0%,rgba(7,8,26,.25) 38%,rgba(7,8,26,0) 60%);pointer-events:none}
 .ch-dim{position:absolute;inset:0;background:#05060f;opacity:0;pointer-events:none}
 .ch-top{position:absolute;top:22px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;z-index:3;pointer-events:none}
@@ -293,8 +297,13 @@ body.admin .ctl{display:flex}
 .acts{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;flex-wrap:wrap}
 .acts .btn{height:44px;font-size:15px;padding:0 20px}
 .acts .left{margin-right:auto}
-.steps{margin:14px 0 0 18px;color:var(--muted);font-size:14px;line-height:1.55}
-.steps a{color:var(--g1);font-weight:500}
+.gsteps{margin:18px 0 4px 20px;font-size:15px;line-height:1.5;color:var(--ink)}
+.gsteps li{margin-bottom:12px;padding-left:4px}
+.gsteps li::marker{color:var(--muted);font-weight:600}
+.gsteps .btn{display:flex;width:max-content;height:42px;margin-top:10px;font-size:15px;padding:0 20px}
+.gcode{font-weight:600;background:var(--soft);border-radius:6px;padding:1px 6px}
+.gmore{margin-top:14px;font-size:14px;color:var(--muted)}
+.gmore summary{cursor:pointer;width:max-content}
 .trows{display:flex;flex-direction:column;gap:8px;margin:18px 0 14px}
 .trow{display:grid;grid-template-columns:22px 52px 1fr 1fr auto;gap:8px;align-items:center;border-radius:14px;transition:background .2s}
 .trow.dragging{background:#fff;box-shadow:0 12px 34px rgba(7,8,26,.16);position:relative;z-index:2}
@@ -488,20 +497,23 @@ body.grabbing,body.grabbing *{cursor:grabbing!important;user-select:none}
 
 <div class="modal" id="mGit" hidden>
   <form class="sheet" id="fGit" novalidate>
-    <h3>Підключи GitHub</h3>
-    <p class="hint">Сайт комітить файли прямо у твій репозиторій. Токен зберігається тільки в цьому браузері, у коді сайту його немає.</p>
-    <div class="row2">
-      <label class="f"><span>Username</span><input name="owner" autocomplete="off" spellcheck="false"></label>
-      <label class="f"><span>Репозиторій</span><input name="repo" autocomplete="off" spellcheck="false"></label>
-    </div>
-    <label class="f"><span>Гілка</span><input name="branch" placeholder="main" autocomplete="off" spellcheck="false"></label>
-    <label class="f"><span>Токен</span><input name="token" type="password" placeholder="github_pat_..." autocomplete="off" spellcheck="false"></label>
-    <ol class="steps">
-      <li>Відкрий <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">створення токена</a>.</li>
-      <li>Repository access: Only select repositories, обери цей репозиторій.</li>
-      <li>Permissions: Contents, Read and write. Натисни Generate і встав сюди.</li>
+    <h3>Дозвіл на публікацію</h3>
+    <p class="hint">Кнопка «Опублікувати» зберігає твої роботи прямо в репозиторій сайту. Для цього GitHub видає їй ключ. Робиться один раз у цьому браузері, ключ ніде, крім нього, не зберігається.</p>
+    <ol class="gsteps">
+      <li><b>Створи ключ.</b> Форма на GitHub уже заповнена.<a class="btn dark" id="gLink" href="#" target="_blank" rel="noopener">Відкрити GitHub</a></li>
+      <li><b>Repository access:</b> вибери Only select repositories, а в списку <span class="gcode" id="gRepoName"></span>.</li>
+      <li>Унизу сторінки натисни <b>Generate token</b>, скопіюй ключ і встав сюди.</li>
     </ol>
-    <div class="acts"><button type="button" class="btn soft left" id="gForget">Забути токен</button><button type="button" class="btn soft" data-close>Скасувати</button><button type="submit" class="btn dark" id="gSave">Підключити</button></div>
+    <label class="f"><span>Ключ з GitHub</span><input name="token" type="password" placeholder="github_pat_..." autocomplete="off" spellcheck="false"></label>
+    <p class="hint">Пароль від GitHub сюди не вводь. Ключ довгий і починається з github_pat_.</p>
+    <details class="gmore"><summary>Інший репозиторій</summary>
+      <div class="row2">
+        <label class="f"><span>Username</span><input name="owner" autocomplete="off" spellcheck="false"></label>
+        <label class="f"><span>Репозиторій</span><input name="repo" autocomplete="off" spellcheck="false"></label>
+      </div>
+      <label class="f"><span>Гілка</span><input name="branch" placeholder="main" autocomplete="off" spellcheck="false"></label>
+    </details>
+    <div class="acts"><button type="button" class="btn soft left" id="gForget">Забути ключ</button><button type="button" class="btn soft" data-close>Скасувати</button><button type="submit" class="btn dark" id="gSave">Підключити</button></div>
   </form>
 </div>
 
@@ -785,9 +797,9 @@ function chapterHTML(s,w,idx,n){
       '<div class="ch-empty"><b>'+esc(s.t)+'</b><p>Сюди піде одна найсильніша робота цього напряму: відео, фото або посилання на гру.</p><button type="button" class="btn light" data-act="edit">+ Додати роботу</button></div>'+
       '<div class="ch-dim"></div></div></article>';
   }
-  var k=kind(w),ver=w._v||0,media,poster=mu(w.poster);
-  if(k==='video')media='<video muted loop playsinline preload="metadata" data-src="'+esc(verSrc(w,ver))+'"'+(poster?' poster="'+esc(poster)+'"':'')+'></video>';
-  else if(k==='image')media='<img src="'+esc(mu(w.src))+'" alt="" loading="lazy" decoding="async">';
+  var k=kind(w),ver=w._v||0,media,poster=mu(w.poster),bd=poster&&k?'<div class="ch-bd" style="background-image:url(&quot;'+esc(poster)+'&quot;)"></div>':'';
+  if(k==='video')media=bd+'<video muted loop playsinline preload="metadata" data-src="'+esc(verSrc(w,ver))+'"'+(poster?' poster="'+esc(poster)+'"':'')+'></video>';
+  else if(k==='image')media=bd+'<img src="'+esc(mu(w.src))+'" alt="" loading="lazy" decoding="async">';
   else media=phHTML(s.id)+'<div class="livebox" data-live="'+esc(w.link)+'"></div>';
   var vers='';
   if(k==='video'&&w.versions&&w.versions.length){
@@ -800,7 +812,7 @@ function chapterHTML(s,w,idx,n){
   if(k)btns.push('<button type="button" class="btn light" data-open="media">'+(k==='video'?'Watch':'View')+'</button>');
   if(w.link)btns.push('<button type="button" class="btn '+(k?'glass':'light')+'" data-open="live">'+liveLabel(s)+'</button>');
   return '<article class="chapter" data-sid="'+esc(s.id)+'" data-id="'+esc(w.id)+'"><div class="ch-card" tabindex="0" aria-label="'+esc(s.t)+'">'+
-    '<div class="ch-media">'+media+'</div><div class="ch-shade"></div>'+
+    '<div class="ch-media"'+(+w.ar>0?' data-ar="'+(+w.ar)+'"':'')+(/^(contain|cover)$/.test(w.fit||'')?' data-fit="'+w.fit+'"':'')+'>'+media+'</div><div class="ch-shade"></div>'+
     '<div class="ch-top">'+(vers||'<span></span>')+'<div class="ch-top-r">'+snd+ctlHTML(idx,n)+'</div></div>'+
     '<div class="ch-info"><div><h3>'+esc(s.t)+'</h3>'+(line?'<p>'+line+'</p>':'')+(state.admin&&isPending(w)?'<span class="ch-pend">Не опубліковано</span>':'')+'</div>'+
       '<div class="ch-side">'+(w.stat?'<div class="stat"><b>'+esc(w.stat)+'</b>'+(w.statLabel?'<span>'+esc(w.statLabel)+'</span>':'')+'</div>':'')+'<div class="ch-btns">'+btns.join('')+'</div></div></div>'+
@@ -817,8 +829,17 @@ function renderWorks(){
   $$('a[href="#work"]').forEach(function(a){a.hidden=none});
   $('#addSkill').hidden=!state.admin;
   chEls=$$('#chapters .chapter');
-  watchLive();update();
+  watchLive();fitMedia();update();
 }
+function fitOne(m){
+  var el=m.querySelector('video,img');if(!el)return;
+  var w=el.videoWidth||el.naturalWidth,h=el.videoHeight||el.naturalHeight,ar=(w&&h)?w/h:+m.dataset.ar;
+  if(!ar||!m.clientWidth||!m.clientHeight)return;
+  var r=ar/(m.clientWidth/m.clientHeight),f=m.dataset.fit;
+  // fit:"contain" in works.json keeps slides and text-heavy videos whole on every screen
+  m.classList.toggle('contain',f==='contain'||(f!=='cover'&&(r>1.6||r<1/1.6)));
+}
+function fitMedia(){$$('#chapters .ch-media').forEach(fitOne)}
 /* link-only work: the card shows the live site, loaded only while it is on screen */
 var liveIO=null;
 function fitLive(box){var f=box.firstChild;if(!f)return;var k=box.clientWidth/1280;f.style.transform='scale('+k+')';f.style.height=Math.ceil(box.clientHeight/k)+'px'}
@@ -1025,7 +1046,7 @@ function bind(){
   $('.lb-x').innerHTML=ICON.close;$('#lbPrev').innerHTML=ICON.left;$('#lbNext').innerHTML=ICON.right;
   $('#year').textContent='© '+new Date().getFullYear();
   window.addEventListener('scroll',onScroll,{passive:true});
-  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){layoutScene();$$('#chapters .livebox').forEach(fitLive);update()},120)});
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){layoutScene();$$('#chapters .livebox').forEach(fitLive);fitMedia();update()},120)});
   var chs=$('#chapters');
   chs.addEventListener('click',function(e){
     var ch=e.target.closest('.chapter');if(!ch)return;
@@ -1038,7 +1059,14 @@ function bind(){
     if(state.admin)openWork(sid);
   });
   chs.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.classList.contains('ch-card')){var ch=e.target.closest('.chapter');if(ch.dataset.id)openLB(ch.dataset.id)}});
-  chs.addEventListener('error',function(e){var t=e.target;if(t.tagName!=='IMG'&&t.tagName!=='VIDEO')return;var ch=t.closest('.chapter');if(ch&&t.parentNode)t.parentNode.innerHTML=phHTML(ch.dataset.sid)},true);
+  ['loadedmetadata','load'].forEach(function(t){chs.addEventListener(t,function(e){var m=e.target.closest&&e.target.closest('.ch-media');if(m)fitOne(m)},true)});
+  // a video the browser can't play falls back to its poster frame; only with no poster the card gets a placeholder
+  chs.addEventListener('error',function(e){
+    var t=e.target;if(t.tagName!=='IMG'&&t.tagName!=='VIDEO')return;var ch=t.closest('.chapter');if(!ch||!t.parentNode)return;
+    var pst=t.tagName==='VIDEO'&&t.getAttribute('poster');
+    if(pst){var im=document.createElement('img');im.src=pst;im.alt='';t.parentNode.replaceChild(im,t);fitOne(im.parentNode)}
+    else t.parentNode.innerHTML=phHTML(ch.dataset.sid);
+  },true);
   $('#arc').addEventListener('error',function(e){
     var t=e.target;if(t.tagName!=='IMG')return;var tile=t.closest('.tile');if(!tile)return;
     var tl=(DATA.profile.tools||[])[+tile.dataset.i],fc=t.closest('.face');if(fc){fc.className='face';fc.removeAttribute('style');fc.innerHTML='<span>'+esc(tl?tl.name:'')+'</span>'}
@@ -1068,10 +1096,15 @@ function bind(){
 /* ============================== admin ============================== */
 function detectRepo(){
   var h=location.hostname,o={};
-  if(/\.github\.io$/i.test(h)){o.owner=h.split('.')[0];var seg=location.pathname.split('/').filter(Boolean)[0];o.repo=(seg&&seg.indexOf('.')<0)?seg:h}
+  // first path segment is the repo (it may contain dots, like baised.portfolio) unless it is the page file itself
+  if(/\.github\.io$/i.test(h)){o.owner=h.split('.')[0];var seg=location.pathname.split('/').filter(Boolean)[0];o.repo=(seg&&!/\.html?$/i.test(seg))?decodeURIComponent(seg):h}
   return o;
 }
-function cfg(){var c=Object.assign({branch:'main',owner:'',repo:'',token:''},detectRepo(),LS.get('pf_gh',{}));if(!c.branch)c.branch='main';return c}
+function cfg(){
+  var saved=LS.get('pf_gh',{});
+  if(saved.token&&!looksLikeToken(saved.token)){delete saved.token;LS.set('pf_gh',saved)}
+  var c=Object.assign({branch:'main',owner:'',repo:'',token:''},detectRepo(),saved);if(!c.branch)c.branch='main';return c;
+}
 function connected(){var c=cfg();return !!(c.owner&&c.repo&&c.token)}
 
 function enterAdmin(){
@@ -1095,14 +1128,14 @@ function gh(path,o){
   return fetch(API+path,{method:o.method||'GET',headers:h,body:o.body?JSON.stringify(o.body):undefined,cache:'no-store'}).then(function(r){
     if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).message}catch(e){}var er=new Error(r.status+' '+m);er.status=r.status;er.ghMessage=m;throw er});
     return o.raw?r.text():(r.status===204?null:r.json());
-  },function(){var er=new Error('network');er.status=0;throw er});
+  },function(){var er=new Error('network');er.status=0;if(/[^\x21-\x7e]/.test(c.token))er.badToken=true;throw er});
 }
 function ghBlob(b64,onp){
   var c=cfg();
   return new Promise(function(res,rej){
     var x=new XMLHttpRequest();
     x.open('POST',API+'/repos/'+c.owner+'/'+c.repo+'/git/blobs');
-    x.setRequestHeader('Authorization','Bearer '+c.token);
+    try{x.setRequestHeader('Authorization','Bearer '+c.token)}catch(e){var bt=new Error('bad token');bt.status=0;bt.badToken=true;rej(bt);return}
     x.setRequestHeader('Accept','application/vnd.github+json');
     x.setRequestHeader('Content-Type','application/json');
     x.upload.onprogress=function(e){if(e.lengthComputable)onp(e.loaded/e.total)};
@@ -1116,13 +1149,15 @@ function ghBlob(b64,onp){
 }
 function explain(e){
   var s=e&&e.status;
-  if(s===401)return 'токен недійсний або прострочений';
-  if(s===403)return 'токену бракує права Contents: Read and write';
-  if(s===404)return 'не бачу репозиторій або гілку, перевір назви і доступ токена';
+  if(s===401)return 'ключ недійсний або прострочений, створи новий';
+  if(s===403)return 'ключу бракує права Contents: Read and write';
+  if(s===404)return 'ключ не бачить репозиторій або гілку, перевір доступ ключа';
   if(s===409)return 'репозиторій порожній, спершу залий index.html';
   if(s===413)return 'файл завеликий для GitHub';
   if(s===422)return 'GitHub відхилив зміни ('+(e.ghMessage||'422')+')';
-  if(s===0)return 'немає звʼязку з GitHub або файл завеликий';
+  if(e&&e.badToken)return 'у полі ключа не ключ GitHub (схоже на пароль або текст). Натисни «GitHub» у панелі, «Забути ключ» і встав ключ, що починається з github_pat_';
+  if(s===0&&e.file)return 'файл '+e.file.replace(/^media\//,'')+' ('+(e.size/1048576).toFixed(0)+' МБ) не завантажився: обірвався інтернет або файл заважкий. Стисни відео до 20-40 МБ (MP4, 1080p) і спробуй ще раз';
+  if(s===0)return 'браузер не достукався до GitHub. Перевір інтернет, VPN або вимкни блокувальник реклами для цього сайту';
   return (e&&e.message)||'невідома помилка';
 }
 function toB64(blob){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(String(fr.result).split(',')[1]||'')};fr.onerror=rej;fr.readAsDataURL(blob)})}
@@ -1222,7 +1257,8 @@ function takeFile(f){
   if(!sizeOk(f))return;
   var go=function(file){
     cleanupPreview();
-    tmp.file=file;tmp.kind=isV?'video':'image';tmp.preview=URL.createObjectURL(file);tmp.poster=null;
+    tmp.file=file;tmp.kind=isV?'video':'image';tmp.preview=URL.createObjectURL(file);tmp.poster=null;tmp.ar='';
+    var probe=document.createElement(isV?'video':'img');probe.onloadedmetadata=probe.onload=function(){var pw=probe.videoWidth||probe.naturalWidth,ph=probe.videoHeight||probe.naturalHeight;if(pw&&ph)tmp.ar=Math.round(pw/ph*1000)/1000};probe.src=tmp.preview;
     var fw=$('#fWork');if(!fw.title.value.trim())fw.title.value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim().slice(0,80);
     drawDrop();
     if(isV)makePoster(file).then(function(b){tmp.poster=b});
@@ -1298,7 +1334,7 @@ function saveWork(e){
   var nb=slug(w.title||st);
   if(tmp.file){
     dropFile(w.src);dropFile(w.poster);
-    var base='media/'+nb+'-'+stamp;w.src=base+'.'+extOf(tmp.file);addFile(w.src,tmp.file);w.type=tmp.kind;
+    var base='media/'+nb+'-'+stamp;w.src=base+'.'+extOf(tmp.file);addFile(w.src,tmp.file);w.type=tmp.kind;w.ar=tmp.ar||'';
     if(tmp.poster){w.poster=base+'-poster.jpg';addFile(w.poster,tmp.poster)}else w.poster='';
   }
   // language versions of the same video (voiceover)
@@ -1433,15 +1469,28 @@ function bindTools(){
 }
 
 /* --- github settings --- */
+/* GitHub template URL: name, owner, a year of validity and write access to files are filled in for him;
+   only the repository has to be picked by hand (the URL can't preselect it) */
+function tokenURL(owner){
+  return 'https://github.com/settings/personal-access-tokens/new?name='+encodeURIComponent('bAIsed portfolio')+
+    '&description='+encodeURIComponent('Lets the portfolio admin publish works to the site repo')+
+    (owner?'&target_name='+encodeURIComponent(owner):'')+'&expires_in=366&contents=write';
+}
+function looksLikeToken(t){return /^(github_pat_[A-Za-z0-9_]{40,}|gh[pousr]_[A-Za-z0-9]{30,})$/.test(t)}
 function openGit(){
   var c=cfg(),f=$('#fGit');
   f.owner.value=c.owner;f.repo.value=c.repo;f.branch.value=c.branch;f.token.value=c.token;
+  $('#gRepoName').textContent=c.repo||'репозиторій сайту';
+  $('#gLink').href=tokenURL(c.owner);
+  $('.gmore').open=!(c.owner&&c.repo);
   $('#mGit').hidden=false;
 }
 function saveGit(e){
   e.preventDefault();
   var f=$('#fGit'),c={owner:f.owner.value.trim(),repo:f.repo.value.trim(),branch:f.branch.value.trim(),token:f.token.value.trim()};
-  if(!c.owner||!c.repo||!c.token){toast('Заповни username, репозиторій і токен');return}
+  if(!c.token){toast('Встав ключ з GitHub');f.token.focus();return}
+  if(!looksLikeToken(c.token)){toast('Це не ключ GitHub. Ключ довгий і починається з github_pat_. Пароль сюди не вводь.',7000);f.token.value='';f.token.focus();return}
+  if(!c.owner||!c.repo){$('.gmore').open=true;toast('Вкажи username і репозиторій');return}
   var btn=$('#gSave');btn.disabled=true;btn.textContent='Перевіряю';
   LS.set('pf_gh',c);
   gh('/repos/'+c.owner+'/'+c.repo).then(function(j){
@@ -1449,7 +1498,10 @@ function saveGit(e){
     if(!c.branch&&j&&j.default_branch){c.branch=j.default_branch;LS.set('pf_gh',c)}
     $('#mGit').hidden=true;toast('GitHub підключено');
     if(!state.dirty)adminLoad();
-  }).catch(function(er){toast('Не вийшло: '+explain(er),6000)}).then(function(){btn.disabled=false;btn.textContent='Підключити'});
+  }).catch(function(er){
+    if(er.status===404)toast('Ключ не бачить '+c.repo+'. На GitHub у Repository access вибери саме цей репозиторій і створи ключ ще раз.',8000);
+    else toast('Не вийшло: '+explain(er),6000);
+  }).then(function(){btn.disabled=false;btn.textContent='Підключити'});
 }
 
 /* --- publish: one commit with media + works.json --- */
@@ -1474,7 +1526,7 @@ function publish(){
     return files.reduce(function(pr,e){return pr.then(function(){
       i++;var label='Файл '+i+' з '+files.length+': '+e[0].replace(/^media\//,'')+' ('+(e[1].size/1048576).toFixed(1)+' МБ)';
       busy('Завантажую',label);
-      return toB64(e[1]).then(function(b64){return ghBlob(b64,function(f){busy('Завантажую '+Math.round(f*100)+'%',label)})}).then(function(r){tree.push({path:e[0],mode:'100644',type:'blob',sha:r.sha})});
+      return toB64(e[1]).then(function(b64){return ghBlob(b64,function(f){busy('Завантажую '+Math.round(f*100)+'%',label)})}).then(function(r){tree.push({path:e[0],mode:'100644',type:'blob',sha:r.sha})},function(er){if(!er.badToken){er.file=e[0];er.size=e[1].size}throw er});
     })},Promise.resolve());
   }).then(function(){
     state.del.forEach(function(p){tree.push({path:p,mode:'100644',type:'blob',sha:null})});
@@ -1530,7 +1582,7 @@ function bindAdmin(){
   $('#fWork').addEventListener('submit',saveWork);
   $('#fProfile').addEventListener('submit',saveProfile);
   $('#fGit').addEventListener('submit',saveGit);
-  $('#gForget').addEventListener('click',function(){var c=LS.get('pf_gh',{});delete c.token;LS.set('pf_gh',c);$('#fGit').token.value='';toast('Токен видалено з цього браузера')});
+  $('#gForget').addEventListener('click',function(){var c=LS.get('pf_gh',{});delete c.token;LS.set('pf_gh',c);$('#fGit').token.value='';toast('Ключ видалено з цього браузера')});
   var d=$('#drop'),fi=$('#file');
   d.addEventListener('click',function(){fi.click()});
   d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click()}});
