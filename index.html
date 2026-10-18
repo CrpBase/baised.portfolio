@@ -116,7 +116,22 @@ img,video,iframe{display:block;max-width:100%}
 .chapters{position:relative;max-width:1244px;margin:0 auto;padding:0 22px}
 .chapter{position:sticky;top:84px;height:calc(100vh - 120px);height:calc(100svh - 120px);min-height:420px;margin-bottom:36px}
 .chapter:last-child{margin-bottom:0}
-.ch-card{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#0d0e22;color:#fff;transform-origin:50% 0;will-change:transform;cursor:pointer;isolation:isolate;box-shadow:0 30px 70px rgba(7,8,26,.18)}
+.ch-card{position:relative;height:100%;border-radius:36px;overflow:hidden;background:#0d0e22;color:#fff;transform-origin:50% 0;will-change:transform;cursor:pointer;isolation:isolate;box-shadow:0 30px 70px rgba(7,8,26,.18);touch-action:pan-y pinch-zoom;-webkit-user-select:none;user-select:none}
+/* a skill card can hold several works; they crossfade in place */
+.slide{position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden;transition:opacity .55s var(--ease),visibility 0s linear .55s}
+.slide.on{opacity:1;visibility:visible;transition:opacity .55s var(--ease),visibility 0s}
+.ch-nav{position:absolute;top:50%;z-index:4;width:48px;height:48px;margin-top:-24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(7,8,26,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:background .2s,transform .2s var(--ease)}
+.ch-nav:hover{background:rgba(7,8,26,.66)}
+.ch-nav:active{transform:scale(.92)}
+.ch-nav:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.85)}
+.ch-nav svg{width:22px;height:22px}
+.ch-nav.l{left:20px}.ch-nav.r{right:20px}
+.ch-dots{position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;height:42px;padding:0 9px;border-radius:999px;background:rgba(7,8,26,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ch-dots button{width:20px;height:42px;display:grid;place-items:center}
+.ch-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.42);transition:background .25s,transform .25s var(--ease)}
+.ch-dots button:hover i{background:rgba(255,255,255,.75)}
+.ch-dots button.on i{background:#fff;transform:scale(1.3)}
+.ch-dots button:focus-visible{outline:none}.ch-dots button:focus-visible i{box-shadow:0 0 0 3px rgba(255,255,255,.6)}
 .ch-media{position:absolute;inset:0}
 .ch-media>img,.ch-media>video{position:relative;width:100%;height:100%;object-fit:cover}
 /* when the video's shape is far from the card's (vertical video on desktop, 16:9 on a phone) it is shown whole over a blurred copy of its own frame */
@@ -140,14 +155,14 @@ img,video,iframe{display:block;max-width:100%}
 .cmp-tag.aud{background:#fff;color:var(--ink)}
 .cmp-tag.aud svg{display:block}
 .ch-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,8,26,.78) 0%,rgba(7,8,26,.25) 38%,rgba(7,8,26,0) 60%);pointer-events:none}
-.ch-dim{position:absolute;inset:0;background:#05060f;opacity:0;pointer-events:none}
+.ch-dim{position:absolute;inset:0;z-index:6;background:#05060f;opacity:0;pointer-events:none}
 .ch-top{position:absolute;top:22px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;z-index:3;pointer-events:none}
 .ch-top>*{pointer-events:auto}
 .ch-top-r{display:flex;gap:8px;margin-left:auto}
 .vers{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(7,8,26,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .vers button{color:#fff;font-size:14px;font-weight:500;height:34px;padding:0 14px;border-radius:999px}
 .vers button.on{background:#fff;color:var(--ink)}
-.rbtn{height:42px;min-width:42px;padding:0 14px;border-radius:999px;background:rgba(7,8,26,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500}
+.rbtn{height:42px;min-width:42px;padding:0 14px;border-radius:999px;background:rgba(7,8,26,.45);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500}
 .rbtn svg{width:18px;height:18px}
 .ch-info{position:absolute;left:0;right:0;bottom:0;padding:40px 40px 36px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;z-index:2;pointer-events:none}
 .ch-info>*{pointer-events:auto}
@@ -171,6 +186,10 @@ img,video,iframe{display:block;max-width:100%}
   .chapter{top:80px;height:calc(100svh - 100px);margin-bottom:22px}
   .ch-card{border-radius:28px}
   .ch-top{top:14px;left:14px;right:14px}
+  .ch-nav{width:40px;height:40px;margin-top:-20px}.ch-nav svg{width:19px;height:19px}
+  .ch-nav.l{left:10px}.ch-nav.r{right:10px}
+  .ch-dots{top:14px;padding:0 6px}.ch-dots button{width:18px}
+  body.admin .ch-dots{top:62px}
   .vers button{height:30px;padding:0 11px;font-size:13px}
   .ch-info{flex-direction:column;align-items:flex-start;gap:18px;padding:24px 22px 24px}
   .ch-info p{font-size:16px}
@@ -188,7 +207,7 @@ img,video,iframe{display:block;max-width:100%}
 .livebox{position:absolute;inset:0;overflow:hidden;background:#fff}
 .livebox iframe{position:absolute;left:0;top:0;width:1280px;max-width:none;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
 /* admin bits on cards */
-.ctl{display:none;gap:6px}
+.ctl{display:none;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 body.admin .ctl{display:flex}
 .ctl button{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .ctl button:hover{background:#fff}
@@ -624,6 +643,7 @@ var ICON = {
   right:SVG('<path d="m9 6 6 6-6 6"/>'),
   del:SVG('<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/>'),
   close:SVG('<path d="M6 6l12 12M18 6 6 18"/>'),
+  plus:SVG('<path d="M12 5v14M5 12h14"/>'),
   on:SVG('<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>'),
   off:SVG('<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path d="m16 9.5 5 5M21 9.5l-5 5"/>'),
   upload:SVG('<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/>')
@@ -691,9 +711,9 @@ function normalize(j){
     if((!o.icon||stale)&&s){o.icon=s.icon;o.bg=s.bg||'';o.fg=s.fg||'';o.size=s.size||''}
     return o;
   });
-  // one work per skill; older files (category grid) are mapped onto skills, extra works are left out
+  // every skill card holds as many works as it has, in file order; older files (category grid) are mapped onto skills
   var ids={};p.skills.forEach(function(s){ids[s.id]=1});
-  var taken={},works=[];
+  var works=[];
   (j&&Array.isArray(j.works)?j.works:[]).forEach(function(w){
     if(!w||!w.id)return;
     var o=Object.assign({title:'',client:'',src:'',poster:'',type:'',link:'',stat:'',statLabel:'',mainLabel:''},w);
@@ -701,8 +721,8 @@ function normalize(j){
     if(w.reel&&!p.reel&&isVid)p.reel={src:o.src,poster:o.poster,title:o.title};
     var sid=o.skill;
     if(!sid||!ids[sid])sid=CAT_TO_SKILL[o.cat]||'';
-    if(!ids[sid]||taken[sid])return;
-    o.skill=sid;taken[sid]=1;
+    if(!ids[sid])return;
+    o.skill=sid;
     o.versions=(Array.isArray(w.versions)?w.versions:[]).filter(function(v){return v&&v.src}).map(function(v){return {label:String(v.label||''),src:v.src,poster:v.poster||''}});
     o.compare=!!w.compare;
     ['cat','feat','reel','year','desc','_v'].forEach(function(k){delete o[k]});
@@ -798,16 +818,24 @@ function setSound(){var v=$('#reelVideo');$('#sound').innerHTML=(v.muted?ICON.of
 
 /* ---------- works: one card per skill ---------- */
 function skillById(id){return (DATA.profile.skills||[]).filter(function(s){return s.id===id})[0]||null}
-function workFor(sid){return DATA.works.filter(function(w){return w.skill===sid})[0]||null}
+function worksFor(sid){return DATA.works.filter(function(w){return w.skill===sid&&hasWork(w)})}
+function workFor(sid){return worksFor(sid)[0]||null}
+function workById(id){return DATA.works.filter(function(w){return w.id===id})[0]||null}
+var slideAt={};// which work each skill card is showing
 function hasWork(w){return !!(w&&(w.src||w.link))}
 function verSrc(w,i){return (i&&w.versions&&w.versions[i-1])?mu(w.versions[i-1].src):mu(w.src)}
 function phHTML(sid){var p=pal(sid||'x');return '<div class="ph" style="--a:'+p[0]+';--b:'+p[1]+'"><i class="p1"></i><i class="p2"></i>'+(ICON[SKILL_ICON[sid]]||ICON.video)+'</div>'}
 function liveLabel(s){return /game|гр/i.test(s?s.t:'')?'Play':'Open live'}
-function ctlHTML(idx,n){
-  return '<div class="ctl"><button type="button" data-act="edit" aria-label="Редагувати">'+ICON.edit+'</button>'+
-    (idx>0?'<button type="button" data-act="up" aria-label="Вище">'+ICON.up+'</button>':'')+
-    (idx<n-1?'<button type="button" data-act="down" aria-label="Нижче">'+ICON.down+'</button>':'')+
-    '<button type="button" class="del" data-act="del" aria-label="Видалити напрям">'+ICON.del+'</button></div>';
+function cb(act,label,icon,cls){return '<button type="button"'+(cls?' class="'+cls+'"':'')+' data-act="'+act+'" aria-label="'+label+'" title="'+label+'">'+icon+'</button>'}
+// admin buttons: j is the work's place inside the skill, m how many works the skill has
+function ctlHTML(idx,n,j,m){
+  return '<div class="ctl">'+cb('edit',m?'Редагувати цю роботу':'Додати роботу',ICON.edit)+
+    (m?cb('add','Додати ще роботу в цей напрям',ICON.plus):'')+
+    (m>1&&j>0?cb('wl','Посунути роботу раніше',ICON.left):'')+
+    (m>1&&j<m-1?cb('wr','Посунути роботу далі',ICON.right):'')+
+    (idx>0?cb('up','Напрям вище',ICON.up):'')+
+    (idx<n-1?cb('down','Напрям нижче',ICON.down):'')+
+    cb('del','Видалити напрям з усіма роботами',ICON.del,'del')+'</div>';
 }
 function cmpHTML(w){
   var v=w.versions[0],pa=mu(w.poster),pb=mu(v.poster||'');
@@ -823,7 +851,7 @@ function cmpSet(c,x){
 }
 // sound comes from whichever language covers more of the frame
 function cmpAudio(c){
-  var card=c.closest('.ch-card'),on=!!(card&&card.dataset.snd==='1'),x=c._x==null?50:c._x,left=x>=50;
+  var sl=c.closest('.slide'),on=!!(sl&&sl.dataset.audio==='1'),x=c._x==null?50:c._x,left=x>=50;
   var a=c.querySelector('.cmp-a'),b=c.querySelector('.cmp-b');
   if(a)a.muted=!(on&&left);if(b)b.muted=!(on&&!left);
   c.querySelector('.cmp-tag.l').classList.toggle('aud',on&&left);c.querySelector('.cmp-tag.r').classList.toggle('aud',on&&!left);
@@ -835,18 +863,28 @@ function cmpSync(c){
   if(Math.abs(b.currentTime-t)>0.12){try{b.currentTime=t}catch(e){}}
   if(a.paused&&!b.paused)b.pause();else if(!a.paused&&b.paused)b.play().catch(function(){});
 }
-function chapterHTML(s,w,idx,n){
-  if(!hasWork(w)){
+function chapterHTML(s,ws,idx,n){
+  if(!ws.length){
     return '<article class="chapter" data-sid="'+esc(s.id)+'"><div class="ch-card empty"><div class="ch-media">'+phHTML(s.id)+'</div>'+
-      '<div class="ch-top"><span></span><div class="ch-top-r">'+ctlHTML(idx,n)+'</div></div>'+
-      '<div class="ch-empty"><b>'+esc(s.t)+'</b><p>Сюди піде одна найсильніша робота цього напряму: відео, фото або посилання на гру.</p><button type="button" class="btn light" data-act="edit">+ Додати роботу</button></div>'+
+      '<div class="ch-top"><span></span><div class="ch-top-r">'+ctlHTML(idx,n,0,0)+'</div></div>'+
+      '<div class="ch-empty"><b>'+esc(s.t)+'</b><p>Додай сюди роботи цього напряму: відео, фото або посилання на гру.</p><button type="button" class="btn light" data-act="edit">+ Додати роботу</button></div>'+
       '<div class="ch-dim"></div></div></article>';
   }
+  var m=ws.length,cur=Math.min(slideAt[s.id]||0,m-1),nav='';slideAt[s.id]=cur;
+  if(m>1){
+    nav='<button type="button" class="ch-nav l" data-nav="-1" aria-label="Previous work">'+ICON.left+'</button>'+
+      '<button type="button" class="ch-nav r" data-nav="1" aria-label="Next work">'+ICON.right+'</button>'+
+      '<div class="ch-dots">'+ws.map(function(w,j){return '<button type="button" data-dot="'+j+'"'+(j===cur?' class="on" aria-current="true"':'')+' aria-label="'+esc((j+1)+' / '+m+(w.title?': '+w.title:''))+'"><i></i></button>'}).join('')+'</div>';
+  }
+  return '<article class="chapter'+(m>1?' multi':'')+'" data-sid="'+esc(s.id)+'"><div class="ch-card" tabindex="0" aria-roledescription="carousel" aria-label="'+esc(s.t+(m>1?', '+m+' works':''))+'">'+
+    ws.map(function(w,j){return slideHTML(s,w,j,m,idx,n,j===cur)}).join('')+nav+'<div class="ch-dim"></div></div></article>';
+}
+function slideHTML(s,w,j,m,idx,n,on){
   var k=kind(w),ver=w._v||0,media,poster=mu(w.poster),bd=poster&&k?'<div class="ch-bd" style="background-image:url(&quot;'+esc(poster)+'&quot;)"></div>':'';
   var cmp=k==='video'&&w.compare&&w.versions&&w.versions.length;
   if(cmp)media=bd+cmpHTML(w);
   else if(k==='video')media=bd+'<video muted loop playsinline preload="metadata" data-src="'+esc(verSrc(w,ver))+'"'+(poster?' poster="'+esc(poster)+'"':'')+'></video>';
-  else if(k==='image')media=bd+'<img src="'+esc(mu(w.src))+'" alt="" loading="lazy" decoding="async">';
+  else if(k==='image')media=bd+'<img src="'+esc(mu(w.src))+'" alt="" loading="lazy" decoding="async" draggable="false">';
   else media=phHTML(s.id)+'<div class="livebox" data-live="'+esc(w.link)+'"></div>';
   var vers='';
   if(k==='video'&&!cmp&&w.versions&&w.versions.length){
@@ -858,18 +896,17 @@ function chapterHTML(s,w,idx,n){
   var btns=[];
   if(k)btns.push('<button type="button" class="btn light" data-open="media">'+(k==='video'?'Watch':'View')+'</button>');
   if(w.link)btns.push('<button type="button" class="btn '+(k?'glass':'light')+'" data-open="live">'+liveLabel(s)+'</button>');
-  return '<article class="chapter" data-sid="'+esc(s.id)+'" data-id="'+esc(w.id)+'"><div class="ch-card" tabindex="0" aria-label="'+esc(s.t)+'">'+
+  return '<div class="slide'+(on?' on':'')+'" data-id="'+esc(w.id)+'"'+(on?'':' inert aria-hidden="true"')+'>'+
     '<div class="ch-media'+(cmp?' cmp-on':'')+'"'+(+w.ar>0?' data-ar="'+(+w.ar)+'"':'')+(/^(contain|cover)$/.test(w.fit||'')?' data-fit="'+w.fit+'"':'')+'>'+media+'</div><div class="ch-shade"></div>'+
-    '<div class="ch-top">'+(vers||'<span></span>')+'<div class="ch-top-r">'+snd+ctlHTML(idx,n)+'</div></div>'+
+    '<div class="ch-top">'+(vers||'<span></span>')+'<div class="ch-top-r">'+snd+ctlHTML(idx,n,j,m)+'</div></div>'+
     '<div class="ch-info"><div><h3>'+esc(s.t)+'</h3>'+(line?'<p>'+line+'</p>':'')+(state.admin&&isPending(w)?'<span class="ch-pend">Не опубліковано</span>':'')+'</div>'+
-      '<div class="ch-side">'+(w.stat?'<div class="stat"><b>'+esc(w.stat)+'</b>'+(w.statLabel?'<span>'+esc(w.statLabel)+'</span>':'')+'</div>':'')+'<div class="ch-btns">'+btns.join('')+'</div></div></div>'+
-    '<div class="ch-dim"></div></div></article>';
+      '<div class="ch-side">'+(w.stat?'<div class="stat"><b>'+esc(w.stat)+'</b>'+(w.statLabel?'<span>'+esc(w.statLabel)+'</span>':'')+'</div>':'')+'<div class="ch-btns">'+btns.join('')+'</div></div></div></div>';
 }
 var chEls=[];
 function renderWorks(){
   var sk=DATA.profile.skills||[];
-  var list=sk.map(function(s){return {s:s,w:workFor(s.id)}}).filter(function(c){return state.admin||hasWork(c.w)});
-  $('#chapters').innerHTML=list.map(function(c,i){return chapterHTML(c.s,c.w,i,list.length)}).join('');
+  var list=sk.map(function(s){return {s:s,ws:worksFor(s.id)}}).filter(function(c){return state.admin||c.ws.length});
+  $('#chapters').innerHTML=list.map(function(c,i){return chapterHTML(c.s,c.ws,i,list.length)}).join('');
   var none=!list.length;
   // no work yet: visitors never see the section or the links to it
   $('#work').hidden=none&&!state.admin;
@@ -899,35 +936,55 @@ function fitLive(box){var f=box.firstChild;if(!f)return;var k=box.clientWidth/12
 function watchLive(){
   if(liveIO)liveIO.disconnect();
   var boxes=$$('#chapters .livebox');if(!boxes.length||!('IntersectionObserver' in window))return;
-  liveIO=new IntersectionObserver(function(es){es.forEach(function(e){
-    var box=e.target;
-    if(e.isIntersecting){
-      if(!box.firstChild){var f=document.createElement('iframe');f.src=box.dataset.live;f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.setAttribute('loading','lazy');f.setAttribute('sandbox','allow-scripts allow-same-origin');f.title='';box.appendChild(f);fitLive(box)}
-    }else if(box.firstChild){box.innerHTML=''}
-  })},{rootMargin:'150px 0px'});
+  liveIO=new IntersectionObserver(function(es){es.forEach(function(e){e.target._vis=e.isIntersecting;liveSet(e.target)})},{rootMargin:'150px 0px'});
   boxes.forEach(function(b){liveIO.observe(b)});
 }
-function soundOn(card){var c=card.querySelector('.cmp');if(c)return card.dataset.snd==='1';var v=card.querySelector('video');return !!(v&&!v.muted)}
+// a live site loads only while its card is near the screen and its work is the one being shown
+function liveSet(box){
+  var want=!!box._vis&&!!box.closest('.slide.on');
+  if(want&&!box.firstChild){var f=document.createElement('iframe');f.src=box.dataset.live;f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.setAttribute('loading','lazy');f.setAttribute('sandbox','allow-scripts allow-same-origin');f.title='';box.appendChild(f);fitLive(box)}
+  else if(!want&&box.firstChild)box.innerHTML='';
+}
+/* sound belongs to one work (slide); turning it on anywhere mutes everything else */
+function soundOn(sl){if(!sl)return false;var c=sl.querySelector('.cmp');if(c)return sl.dataset.audio==='1';var v=sl.querySelector('video');return !!(v&&!v.muted)}
 function soundIcons(){
-  $$('#chapters [data-snd]').forEach(function(b){b.innerHTML=soundOn(b.closest('.ch-card'))?ICON.on:ICON.off});
+  $$('#chapters button[data-snd]').forEach(function(b){b.innerHTML=soundOn(b.closest('.slide'))?ICON.on:ICON.off});
 }
-function muteChapters(exceptCard){
-  $$('#chapters .ch-card').forEach(function(card){
-    if(card===exceptCard)return;card.dataset.snd='';
-    $$('video',card).forEach(function(v){v.muted=true});
-    var c=card.querySelector('.cmp');if(c)cmpAudio(c);
-  });
+function muteSlide(sl){sl.dataset.audio='';$$('video',sl).forEach(function(v){v.muted=true});var c=sl.querySelector('.cmp');if(c)cmpAudio(c)}
+function muteChapters(except){$$('#chapters .slide').forEach(function(sl){if(sl!==except)muteSlide(sl)})}
+function muteOthers(keep){muteChapters(keep);var r=$('#reelVideo');if(!r.muted){r.muted=true;setSound()}}
+function soundTo(sl,on){
+  var cm=sl.querySelector('.cmp'),v=sl.querySelector('video');if(!v)return;
+  if(on)muteOthers(sl);
+  if(cm){sl.dataset.audio=on?'1':'';if(on)$$('video',cm).forEach(function(x){x.play().catch(function(){})});cmpAudio(cm)}
+  else{v.muted=!on;if(on)v.play().catch(function(){})}
+  soundIcons();
 }
-function muteOthers(keepCard){muteChapters(keepCard);var r=$('#reelVideo');if(!r.muted){r.muted=true;setSound()}}
-function switchVersion(card,w,i){
-  var v=card.querySelector('video');if(!v)return;
+function switchVersion(sl,w,i){
+  var v=sl.querySelector('video');if(!v)return;
   var t=v.currentTime||0;w._v=i;
   v.src=verSrc(w,i);v.dataset.src=v.src;
   v.addEventListener('loadedmetadata',function once(){v.removeEventListener('loadedmetadata',once);try{v.currentTime=Math.min(t,(v.duration||t)-0.1)}catch(e){}},false);
-  muteOthers(card);v.muted=false;v.play().catch(function(){});
-  $$('[data-ver]',card).forEach(function(b){b.classList.toggle('on',+b.dataset.ver===i)});
+  muteOthers(sl);v.muted=false;v.play().catch(function(){});
+  $$('[data-ver]',sl).forEach(function(b){b.classList.toggle('on',+b.dataset.ver===i)});
   soundIcons();
 }
+/* several works in one skill card: arrows, dots, swipe and arrow keys move between them */
+function curSlide(ch){return ch.querySelector('.slide.on')}
+function goSlide(ch,i){
+  var sl=$$('.slide',ch),m=sl.length;if(m<2)return;
+  i=((i%m)+m)%m;var cur=curSlide(ch),nx=sl[i];if(cur===nx)return;
+  var hadSound=soundOn(cur);
+  if(cur){muteSlide(cur);$$('video',cur).forEach(function(v){v.pause()});cur.classList.remove('on');cur.setAttribute('inert','');cur.setAttribute('aria-hidden','true')}
+  nx.classList.add('on');nx.removeAttribute('inert');nx.removeAttribute('aria-hidden');
+  slideAt[ch.dataset.sid]=i;
+  $$('[data-dot]',ch).forEach(function(d,j){d.classList.toggle('on',j===i);if(j===i)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+  $$('.ch-media',nx).forEach(fitOne);$$('.livebox',ch).forEach(liveSet);
+  update();
+  // someone listening keeps listening on the next work
+  if(hadSound)soundTo(nx,true);else soundIcons();
+}
+function stepSlide(ch,d){goSlide(ch,(slideAt[ch.dataset.sid]||0)+d)}
 
 /* ---------- scene: wordmark layout + zoom ---------- */
 var L={ok:false},sceneVisible=false,aboutWords=[],skillEls=[],skillAct=null;
@@ -1015,7 +1072,8 @@ function update(){
       if(card._k!==kk){card._k=kk;card.style.transform=kk?'scale('+(1-0.07*kk).toFixed(4)+')':'';var dm=card.querySelector('.ch-dim');if(dm)dm.style.opacity=(0.6*kk).toFixed(3)}
       var show=rc2.top<vh&&rc2.bottom>0&&kk<0.9&&!lbOpen;
       $$('video',card).forEach(function(vv){
-        if(show){if(!vv.getAttribute('src')&&vv.dataset.src)vv.src=vv.dataset.src;if(vv.paused)vv.play().catch(function(){})}
+        var vs=vv.closest('.slide');
+        if(show&&(!vs||vs.classList.contains('on'))){if(!vv.getAttribute('src')&&vv.dataset.src)vv.src=vv.dataset.src;if(vv.paused)vv.play().catch(function(){})}
         else if(!vv.paused)vv.pause();
       });
     }
@@ -1059,7 +1117,7 @@ function update(){
 /* ---------- lightbox ---------- */
 var lbList=[],lbIdx=0,lbMode='media';
 function shareURL(id){return location.href.split('#')[0]+'#w='+encodeURIComponent(id)}
-function lbItems(){var out=[];(DATA.profile.skills||[]).forEach(function(s){var w=workFor(s.id);if(hasWork(w))out.push(w)});return out}
+function lbItems(){var out=[];(DATA.profile.skills||[]).forEach(function(s){out=out.concat(worksFor(s.id))});return out}
 function openLB(id,mode){
   if(id==='reel'){if(!reelW)return;lbList=[reelW];lbIdx=0}
   else{lbList=lbItems();lbIdx=lbList.findIndex(function(w){return w.id===id});if(lbIdx<0)return}
@@ -1110,23 +1168,39 @@ function bind(){
   window.addEventListener('scroll',onScroll,{passive:true});
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){layoutScene();$$('#chapters .livebox').forEach(fitLive);fitMedia();update()},120)});
   var chs=$('#chapters');
+  var swipe=null,swiped=0;
   chs.addEventListener('click',function(e){
     var ch=e.target.closest('.chapter');if(!ch)return;
-    var sid=ch.dataset.sid,w=ch.dataset.id?DATA.works.filter(function(x){return x.id===ch.dataset.id})[0]:null,card=ch.firstChild;
-    var a=e.target.closest('[data-act]');if(a){e.stopPropagation();chapterAct(a.dataset.act,sid);return}
-    var vb=e.target.closest('[data-ver]');if(vb&&w){switchVersion(card,w,+vb.dataset.ver);return}
-    if(e.target.closest('[data-snd]')){
-      var cm=card.querySelector('.cmp'),v=card.querySelector('video');
-      if(cm){var turnOn=card.dataset.snd!=='1';card.dataset.snd=turnOn?'1':'';if(turnOn){muteOthers(card);$$('video',cm).forEach(function(x){x.play().catch(function(){})})}cmpAudio(cm)}
-      else if(v){v.muted=!v.muted;if(!v.muted){muteOthers(card);v.play().catch(function(){})}}
-      soundIcons();return;
-    }
+    if(Date.now()-swiped<400){e.preventDefault();return}
+    var sid=ch.dataset.sid;
+    var nb=e.target.closest('[data-nav]');if(nb){stepSlide(ch,+nb.dataset.nav);return}
+    var db=e.target.closest('[data-dot]');if(db){goSlide(ch,+db.dataset.dot);return}
+    var sl=e.target.closest('.slide')||curSlide(ch),w=sl?workById(sl.dataset.id):null;
+    var a=e.target.closest('[data-act]');if(a){e.stopPropagation();chapterAct(a.dataset.act,sid,w);return}
+    var vb=e.target.closest('[data-ver]');if(vb&&w){switchVersion(sl,w,+vb.dataset.ver);return}
+    if(e.target.closest('button[data-snd]')){if(sl)soundTo(sl,!soundOn(sl));return}
     if(e.target.closest('.cmp'))return;
     var ob=e.target.closest('[data-open]');
     if(w){openLB(w.id,ob?ob.dataset.open:null);return}
     if(state.admin)openWork(sid);
   });
-  chs.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.classList.contains('ch-card')){var ch=e.target.closest('.chapter');if(ch.dataset.id)openLB(ch.dataset.id)}});
+  chs.addEventListener('keydown',function(e){
+    if(!e.target.classList.contains('ch-card'))return;
+    var ch=e.target.closest('.chapter');
+    if(e.key==='Enter'){var sl=curSlide(ch);if(sl)openLB(sl.dataset.id)}
+    else if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&ch.classList.contains('multi')){e.preventDefault();stepSlide(ch,e.key==='ArrowLeft'?-1:1)}
+  });
+  // horizontal swipe on a card with several works; the compare slider keeps its own drag
+  chs.addEventListener('pointerdown',function(e){
+    if(e.button>0||e.target.closest('.cmp'))return;
+    var ch=e.target.closest('.chapter.multi');swipe=ch?{ch:ch,x:e.clientX,y:e.clientY,id:e.pointerId}:null;
+  });
+  window.addEventListener('pointerup',function(e){
+    if(!swipe||e.pointerId!==swipe.id)return;
+    var dx=e.clientX-swipe.x,dy=e.clientY-swipe.y,ch=swipe.ch;swipe=null;
+    if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.4){swiped=Date.now();stepSlide(ch,dx<0?1:-1)}
+  });
+  window.addEventListener('pointercancel',function(){swipe=null});
   ['loadedmetadata','load'].forEach(function(t){chs.addEventListener(t,function(e){var m=e.target.closest&&e.target.closest('.ch-media');if(m)fitOne(m)},true)});
   chs.addEventListener('pointerdown',function(e){
     var c=e.target.closest('.cmp');if(!c||e.button>0)return;
@@ -1260,33 +1334,40 @@ function removeWork(w){
   dropFile(w.src);dropFile(w.poster);(w.versions||[]).forEach(function(v){dropFile(v.src)});
   var i=DATA.works.indexOf(w);if(i>=0)DATA.works.splice(i,1);
 }
-function chapterAct(act,sid){
+function chapterAct(act,sid,w){
   var sk=DATA.profile.skills,i=sk.findIndex(function(s){return s.id===sid});if(i<0)return;
-  if(act==='edit')openWork(sid);
-  else if(act==='up'||act==='down'){
+  if(act==='edit')openWork(sid,w?w.id:null);
+  else if(act==='add')openWork(sid,'new');
+  else if((act==='wl'||act==='wr')&&w){
+    // order inside a skill is the order of works.json
+    var ws=worksFor(sid),a=ws.indexOf(w),b=act==='wl'?a-1:a+1;if(a<0||b<0||b>=ws.length)return;
+    var ia=DATA.works.indexOf(w),ib=DATA.works.indexOf(ws[b]);DATA.works[ia]=ws[b];DATA.works[ib]=w;
+    slideAt[sid]=b;markDirty('reorder works');renderAll();
+  }else if(act==='up'||act==='down'){
     var j=act==='up'?i-1:i+1;if(j<0||j>=sk.length)return;
     var t=sk[i];sk[i]=sk[j];sk[j]=t;markDirty('reorder');renderAll();
   }else if(act==='del'){
-    var name=sk[i].t;
-    if(!confirm('Видалити напрям «'+name+'» разом з його роботою?'))return;
-    removeWork(workFor(sid));sk.splice(i,1);markDirty('remove '+name);renderAll();
+    var name=sk[i].t,all=DATA.works.filter(function(x){return x.skill===sid});
+    if(!confirm('Видалити напрям «'+name+'»'+(all.length?' разом з роботами ('+all.length+')':'')+'?'))return;
+    all.forEach(removeWork);sk.splice(i,1);delete slideAt[sid];markDirty('remove '+name);renderAll();
   }
 }
 
 /* --- one sheet edits a skill and its work, or the showreel --- */
 var edit=null,editSid=null,tmp=null,sheetMode='work';
 function cleanupPreview(){if(tmp&&tmp.preview){URL.revokeObjectURL(tmp.preview);tmp.preview=null}}
-function openWork(sid){
+// wid: a work to edit, 'new' to add one more work to the skill, empty for the skill's first work
+function openWork(sid,wid){
   if(!state.admin)return;
   sheetMode='work';editSid=sid||null;
-  var s=sid?skillById(sid):null;edit=sid?workFor(sid):null;
+  var s=sid?skillById(sid):null;edit=(!sid||wid==='new')?null:(wid?workById(wid):workFor(sid));
   var w=edit||{title:'',client:'',link:'',stat:'',statLabel:'',mainLabel:'',versions:[]};
   tmp={file:null,poster:null,kind:null,preview:null,vers:(w.versions||[]).map(function(v){return {label:v.label,src:v.src,poster:v.poster||'',file:null}})};
   var f=$('#fWork');f.classList.remove('reel-mode');
   f.skill.value=s?s.t:'';f.sdesc.value=s?s.d:'';
   f.title.value=w.title||'';f.client.value=w.client||'';f.stat.value=w.stat||'';f.statLabel.value=w.statLabel||'';f.link.value=w.link||'';f.mainLabel.value=w.mainLabel||'';f.compare.checked=!!w.compare;
-  $('#wHead').textContent=s?s.t:'Новий напрям';
-  $('#wHint').textContent='Одна найсильніша робота цього напряму. Перетягни файл, натисни або встав через Ctrl+V.';
+  $('#wHead').textContent=s?(edit?s.t:s.t+': нова робота'):'Новий напрям';
+  $('#wHint').textContent='Перетягни файл, натисни або встав через Ctrl+V. У напрямі може бути кілька робіт, їх гортають стрілками.';
   $('#wDel').hidden=!hasWork(edit);$('#wDel').textContent='Прибрати роботу';
   drawDrop(edit);drawVers();
   $('#mWork').hidden=false;
@@ -1426,6 +1507,7 @@ function saveWork(e){
   });
   (w.versions||[]).forEach(function(v){if(!keep.has(v.src))dropFile(v.src)});
   w.versions=nv;w._v=0;w.compare=f.compare.checked&&nv.length>0;
+  slideAt[s.id]=Math.max(0,worksFor(s.id).indexOf(w));
   closeSheet();markDirty((edit?'edit ':'add ')+(w.title||st));renderAll();
   toast('Збережено. Натисни «Опублікувати», щоб зміни зʼявились на сайті.',4200);
 }
@@ -1679,7 +1761,8 @@ function bindAdmin(){
     if(!$('#mTools').hidden||!$('#mProfile').hidden||!$('#mGit').hidden)return;
     if(!$('#mWork').hidden){takeFile(f);return}
     var ch=e.target.closest('.chapter');
-    if(ch){openWork(ch.dataset.sid);takeFile(f)}else toast('Кинь файл на картку потрібного напряму');
+    // a file dropped on a card becomes one more work in that skill
+    if(ch){openWork(ch.dataset.sid,'new');takeFile(f)}else toast('Кинь файл на картку потрібного напряму');
   });
   bindTools();
   window.addEventListener('beforeunload',function(e){if(state.admin&&state.dirty){e.preventDefault();e.returnValue=''}});
