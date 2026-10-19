@@ -120,13 +120,13 @@ img,video,iframe{display:block;max-width:100%}
 /* a skill card can hold several works; they crossfade in place */
 .slide{position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden;transition:opacity .55s var(--ease),visibility 0s linear .55s}
 .slide.on{opacity:1;visibility:visible;transition:opacity .55s var(--ease),visibility 0s}
-.ch-nav{position:absolute;top:50%;z-index:4;width:48px;height:48px;margin-top:-24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(7,8,26,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:background .2s,transform .2s var(--ease)}
-.ch-nav:hover{background:rgba(7,8,26,.66)}
+.ch-nav{position:absolute;top:50%;z-index:4;width:48px;height:48px;margin-top:-24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(7,8,26,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);transition:background .2s,transform .2s var(--ease)}
+.ch-nav:hover{background:rgba(7,8,26,.78)}
 .ch-nav:active{transform:scale(.92)}
 .ch-nav:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,255,255,.85)}
 .ch-nav svg{width:22px;height:22px}
 .ch-nav.l{left:20px}.ch-nav.r{right:20px}
-.ch-dots{position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;height:42px;padding:0 9px;border-radius:999px;background:rgba(7,8,26,.42);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ch-dots{position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;height:42px;padding:0 9px;border-radius:999px;background:rgba(7,8,26,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
 .ch-dots button{width:20px;height:42px;display:grid;place-items:center}
 .ch-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.42);transition:background .25s,transform .25s var(--ease)}
 .ch-dots button:hover i{background:rgba(255,255,255,.75)}
@@ -149,20 +149,20 @@ img,video,iframe{display:block;max-width:100%}
 .cmp-h i svg{width:22px;height:22px}
 .cmp:active .cmp-h i,.cmp-h:focus-visible i{transform:scale(1.08)}
 .cmp-h:focus-visible i{box-shadow:0 0 0 4px rgba(99,102,241,.6)}
-.cmp-tag{position:absolute;top:16px;z-index:2;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;height:30px;padding:0 12px;border-radius:999px;background:rgba(7,8,26,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);pointer-events:none;transition:background .2s,color .2s}
+.cmp-tag{position:absolute;top:16px;z-index:2;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#fff;height:30px;padding:0 12px;border-radius:999px;background:rgba(7,8,26,.62);pointer-events:none;transition:background .2s,color .2s}
 .cmp-tag svg{width:14px;height:14px;display:none}
 .cmp-tag.l{left:16px}.cmp-tag.r{right:16px}
 .cmp-tag.aud{background:#fff;color:var(--ink)}
 .cmp-tag.aud svg{display:block}
 .ch-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,8,26,.78) 0%,rgba(7,8,26,.25) 38%,rgba(7,8,26,0) 60%);pointer-events:none}
-.ch-dim{position:absolute;inset:0;z-index:6;background:#05060f;opacity:0;pointer-events:none}
+.ch-dim{position:absolute;inset:0;z-index:6;background:#05060f;opacity:0;pointer-events:none;will-change:opacity}
 .ch-top{position:absolute;top:22px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;z-index:3;pointer-events:none}
 .ch-top>*{pointer-events:auto}
 .ch-top-r{display:flex;gap:8px;margin-left:auto}
-.vers{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(7,8,26,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.vers{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(7,8,26,.58)}
 .vers button{color:#fff;font-size:14px;font-weight:500;height:34px;padding:0 14px;border-radius:999px}
 .vers button.on{background:#fff;color:var(--ink)}
-.rbtn{height:42px;min-width:42px;padding:0 14px;border-radius:999px;background:rgba(7,8,26,.45);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500}
+.rbtn{height:42px;min-width:42px;padding:0 14px;border-radius:999px;background:rgba(7,8,26,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:500}
 .rbtn svg{width:18px;height:18px}
 .ch-info{position:absolute;left:0;right:0;bottom:0;padding:40px 40px 36px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;z-index:2;pointer-events:none}
 .ch-info>*{pointer-events:auto}
@@ -776,7 +776,7 @@ function renderProfile(){
   // skills light up one by one inside the hero after the zoom
   var sk=p.skills||[];
   $('#sceneSkills').innerHTML=sk.map(function(s){return '<span>'+esc(s.t)+'</span>'}).join('')+(sk.length?'<em class="desc" id="skillDesc"></em>':'');
-  skillEls=$$('#sceneSkills span');skillAct=null;
+  skillEls=$$('#sceneSkills span');skillAct=null;L.lastP=null;
   // projects: main ones in ink on the first row, the rest faint on the second
   var main=p.main||[],rest=p.clients||[];
   var row=function(arr){var a=arr;while(a.length<9)a=a.concat(arr);return a.map(function(n){return '<span>'+esc(n)+'</span>'}).join('')};
@@ -1027,7 +1027,9 @@ function update(){
   var sc=$('#top'),r=sc.getBoundingClientRect(),st=$('#sticky');
   var p=clamp(-r.top/Math.max(1,r.height-vh));
   sceneVisible=r.bottom>0&&r.top<vh;
-  if(L.ok){
+  // the zoom only needs redrawing when its progress changes; once scrolled past, the hero costs nothing
+  if(L.ok&&p!==L.lastP){
+    L.lastP=p;
     // 0 to 0.43: letters split, camera flies into the I. 0.44 to 1: skills light up one by one, then all together
     var fade=clamp(p/0.07),zoomT,s,maskO,capO,skO;
     if(reduce){zoomT=p>0.2?1:0;s=1;maskO=p>0.2?0:1;capO=p>0.25?1:0;skO=capO}
@@ -1070,7 +1072,7 @@ function update(){
       var ce=chEls[ci],card=ce.firstChild,rc2=ce.getBoundingClientRect(),nx=chEls[ci+1],kk=0;
       if(nx&&!reduce){kk=clamp((vh-nx.getBoundingClientRect().top)/Math.max(1,vh-stick))}
       if(card._k!==kk){card._k=kk;card.style.transform=kk?'scale('+(1-0.07*kk).toFixed(4)+')':'';var dm=card.querySelector('.ch-dim');if(dm)dm.style.opacity=(0.6*kk).toFixed(3)}
-      var show=rc2.top<vh&&rc2.bottom>0&&kk<0.9&&!lbOpen;
+      var show=rc2.top<vh*0.8&&rc2.bottom>vh*0.2&&kk<0.5&&!lbOpen;
       $$('video',card).forEach(function(vv){
         var vs=vv.closest('.slide');
         if(show&&(!vs||vs.classList.contains('on'))){if(!vv.getAttribute('src')&&vv.dataset.src)vv.src=vv.dataset.src;if(vv.paused)vv.play().catch(function(){})}
