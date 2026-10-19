@@ -913,7 +913,7 @@ function renderWorks(){
   $$('a[href="#work"]').forEach(function(a){a.hidden=none});
   $('#addSkill').hidden=!state.admin;
   chEls=$$('#chapters .chapter');
-  watchLive();fitMedia();update();
+  watchLive();fitMedia();update();startPreload();
 }
 function fitOne(m){
   var c=m.querySelector('.cmp');
@@ -930,6 +930,31 @@ function fitOne(m){
   m.classList.toggle('contain',f==='contain'||(f!=='cover'&&(r>1.6||r<1/1.6)));
 }
 function fitMedia(){$$('#chapters .ch-media').forEach(fitOne)}
+/* every work video downloads in the background right after the page is up, one after another in the
+   order the cards appear (the work each card shows first, then the ones behind the arrows), so scrolling
+   into Works never waits on the network. Data Saver skips it; slow connections fetch only the opening */
+var preloadRun=null,preloadT=0;
+function startPreload(){
+  clearTimeout(preloadT);preloadRun=null;
+  var go=function(){clearTimeout(preloadT);preloadT=setTimeout(preloadWorks,600)};
+  if(document.readyState==='complete')go();else window.addEventListener('load',go,{once:true});
+}
+function preloadWorks(){
+  var con=navigator.connection||{};if(con.saveData)return;
+  var light=/(^|-)2g|3g/.test(con.effectiveType||''),first=[],rest=[];
+  $$('#chapters .slide').forEach(function(sl){$$('video',sl).forEach(function(v){(sl.classList.contains('on')?first:rest).push(v)})});
+  var q=first.concat(rest),run=preloadRun={};
+  (function next(){
+    if(preloadRun!==run)return;
+    var v=q.shift();if(!v)return;
+    if(!v.isConnected||!v.dataset.src||v.getAttribute('src')){next();return}
+    var done=false,ev=light?'loadeddata':'canplaythrough';
+    var fin=function(){if(done)return;done=true;clearTimeout(t);v.removeEventListener(ev,fin);v.removeEventListener('error',fin);next()};
+    var t=setTimeout(fin,9000);
+    v.addEventListener(ev,fin);v.addEventListener('error',fin);
+    v.preload=light?'metadata':'auto';v.src=v.dataset.src;
+  })();
+}
 /* link-only work: the card shows the live site, loaded only while it is on screen */
 var liveIO=null;
 function fitLive(box){var f=box.firstChild;if(!f)return;var k=box.clientWidth/1280;f.style.transform='scale('+k+')';f.style.height=Math.ceil(box.clientHeight/k)+'px'}
@@ -1781,7 +1806,12 @@ function boot(){
   Promise.race([fontsReady,timeout]).then(layoutScene);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){layoutScene()});
   fetch('works.json?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){
-    if(j&&Array.isArray(j.works)&&!state.dirty){DATA=normalize(j);renderAll();update()}
+    if(j&&Array.isArray(j.works)&&!state.dirty){
+      // works.json usually changes only the works: the hero, About and tools are left alone, so nothing on screen jumps
+      var was=JSON.stringify(DATA.profile);DATA=normalize(j);
+      if(JSON.stringify(DATA.profile)===was){renderWorks();updateDock()}else renderAll();
+      update();
+    }
   }).catch(function(){}).then(function(){
     if(wantAdmin)enterAdmin();
     var m=/^#w=(.+)$/.exec(location.hash);if(m)setTimeout(function(){openLB(decodeURIComponent(m[1]))},250);
