@@ -1271,7 +1271,7 @@ function bind(){
   });
   var tx=0;lb.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
   lb.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60&&!e.target.closest('iframe,video'))stepLB(dx<0?1:-1)},{passive:true});
-  window.addEventListener('hashchange',function(){if(location.hash==='#admin'&&!state.admin){LS.set('pf_admin',1);enterAdmin()}});
+  window.addEventListener('hashchange',function(){if(location.hash==='#admin'&&!state.admin)enterAdmin()});
 }
 
 /* ============================== admin ============================== */
@@ -1798,8 +1798,9 @@ function bindAdmin(){
 /* ---------- boot ---------- */
 function boot(){
   bind();bindAdmin();
-  if(location.hash==='#admin')LS.set('pf_admin',1);
-  var wantAdmin=!!LS.get('pf_admin',0);
+  // admin opens only from a link ending in #admin; a plain link always shows the visitor's site
+  LS.del('pf_admin');
+  var wantAdmin=location.hash==='#admin';
   renderAll();
   var fontsReady=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
   var timeout=new Promise(function(r){setTimeout(r,1500)});
